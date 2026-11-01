@@ -1,0 +1,120 @@
+{
+  "info": {
+    "name": "Energosbyt",
+    "description": "Lab 1 API of the Energosbyt service. Set the `base_url` variable to the app host, default is http://localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "realty_id",
+      "value": "1"
+    },
+    {
+      "key": "user_id",
+      "value": "1"
+    },
+    {
+      "key": "gauge_id",
+      "value": "2"
+    }
+  ],
+  "item": [
+    {
+      "name": "Ping",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/ping"
+      }
+    },
+    {
+      "name": "Get owner",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/users/{{user_id}}"
+      }
+    },
+    {
+      "name": "Update owner",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"fio\": \"Петрова Анна Сергеевна\",\n    \"phone\": \"+79111111111\"\n}"
+        },
+        "url": "{{base_url}}/users/{{user_id}}"
+      }
+    },
+    {
+      "name": "Get realty",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/realty/{{realty_id}}"
+      }
+    },
+    {
+      "name": "Submit reading",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"user_id\": 1,\n    \"gauge_id\": 1,\n    \"tariff_id\": 1,\n    \"reading_date\": \"2026-10-01\",\n    \"day_kw\": 1250,\n    \"night_kw\": 300\n}"
+        },
+        "url": "{{base_url}}/realty/{{realty_id}}/readings"
+      }
+    },
+    {
+      "name": "Readings for period",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/realty/{{realty_id}}/readings?date_from=2026-10-01&date_to=2026-10-31"
+      }
+    },
+    {
+      "name": "Realty invoices",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/realty/{{realty_id}}/invoices?limit=10&offset=0"
+      }
+    },
+    {
+      "name": "Tariff on date",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/tariffs?date=2026-10-27"
+      }
+    },
+    {
+      "name": "Install gauge",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"gauge_id\": 2\n}"
+        },
+        "url": "{{base_url}}/realty/{{realty_id}}/gauges"
+      }
+    }
+  ]
+}
