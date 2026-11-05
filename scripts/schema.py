@@ -1,6 +1,6 @@
 import os
 
-from envlocal import ClickHouse, load_env
+from envlocal import clickhouse_from_env, load_env
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCHEMA_PATH = os.path.join(ROOT, "db", "schema.sql")
@@ -9,7 +9,7 @@ SCHEMA_PATH = os.path.join(ROOT, "db", "schema.sql")
 def main() -> None:
     env = load_env()
     database = env.get("CLICKHOUSE_DATABASE", "energosbyt")
-    ch = ClickHouse(env)
+    ch = clickhouse_from_env(env)
     with open(SCHEMA_PATH, encoding="utf-8") as fh:
         schema = fh.read()
     for statement in schema.split(";"):

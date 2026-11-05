@@ -1,6 +1,6 @@
 import os
 
-from envlocal import ClickHouse, load_env
+from envlocal import clickhouse_from_env, load_env
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(ROOT, "data")
@@ -18,7 +18,7 @@ TABLES = [
 BATCH_LINES = 200000
 
 
-def load_table(ch: ClickHouse, database: str, table: str) -> int:
+def load_table(ch, database: str, table: str) -> int:
     path = os.path.join(DATA_DIR, table + ".csv")
     if not os.path.exists(path):
         raise RuntimeError(f"missing {path}, run make gen first")
@@ -39,7 +39,7 @@ def load_table(ch: ClickHouse, database: str, table: str) -> int:
 def main() -> None:
     env = load_env()
     database = env.get("CLICKHOUSE_DATABASE", "energosbyt")
-    ch = ClickHouse(env)
+    ch = clickhouse_from_env(env)
     for table in TABLES:
         total = load_table(ch, database, table)
         print(f"{table}: {total} rows loaded")

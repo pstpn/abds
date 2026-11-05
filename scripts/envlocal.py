@@ -1,9 +1,12 @@
 import os
-import urllib.error
-import urllib.parse
-import urllib.request
+import sys
 
-ENV_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env.local")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+
+from app.ch import ClickHouse
+
+ENV_FILE = os.path.join(ROOT, ".env.local")
 
 
 def load_env(path: str = ENV_FILE) -> dict:
@@ -18,26 +21,11 @@ def load_env(path: str = ENV_FILE) -> dict:
     return values
 
 
-class ClickHouse:
-    def __init__(self, env: dict) -> None:
-        self.host = env.get("CLICKHOUSE_HOST", "localhost")
-        self.port = env.get("CLICKHOUSE_HTTP_PORT", "8123")
-        self.user = env.get("CLICKHOUSE_USER", "default")
-        self.password = env.get("CLICKHOUSE_PASSWORD", "")
-        self.base = f"http://{self.host}:{self.port}/"
-
-    def url(self, query: str) -> str:
-        params = {"query": query}
-        if self.password:
-            params["user"] = self.user
-            params["password"] = self.password
-        return self.base + "?" + urllib.parse.urlencode(params)
-
-    def execute(self, query: str, data: bytes = b"") -> str:
-        request = urllib.request.Request(self.url(query), data=data, method="POST")
-        try:
-            with urllib.request.urlopen(request, timeout=600) as response:
-                return response.read().decode("utf-8")
-        except urllib.error.HTTPError as err:
-            body = err.read().decode("utf-8", "replace")
-            raise RuntimeError(f"ClickHouse error {err.code}: {body}") from err
+def clickhouse_from_env(env: dict) -> ClickHouse:
+    return ClickHouse(
+        host=env.get("CLICKHOUSE_HOST", "localhost"),
+        http_port=env.get("CLICKHOUSE_HTTP_PORT", "8123"),
+        user=env.get("CLICKHOUSE_USER", "default"),
+        password=env.get("CLICKHOUSE_PASSWORD", ""),
+        database=env.get("CLICKHOUSE_DATABASE", "energosbyt"),
+    )

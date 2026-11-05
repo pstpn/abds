@@ -29,6 +29,10 @@ class ClickHouse:
         url = self._url(f"INSERT INTO {self.database}.{table} FORMAT JSONEachRow", {})
         self._request(url, payload.encode("utf-8"))
 
+    def execute(self, sql: str, data: bytes = b"") -> str:
+        url = self.base + "?" + urllib.parse.urlencode({"query": sql})
+        return self._request(url, data)
+
     def _url(self, sql: str, params: dict[str, str]) -> str:
         query = {
             "query": sql,
