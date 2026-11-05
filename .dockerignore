@@ -1,0 +1,9 @@
+.git
+.github
+volume
+data
+api
+abds
+*.md
+Makefile
+docker-compose.yml
